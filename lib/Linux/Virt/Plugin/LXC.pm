@@ -67,6 +67,38 @@ sub vms {
     return 1;
 } ## end sub vms
 
+sub start {
+  my $self    = shift;
+  my $vsname  = shift;
+
+  my $cmd = '/usr/sbin/lxc-start -d -n '.$vsname;
+  $self->sys()->run_cmd( $cmd );
+  sleep 1;
+
+  if ( !$self->is_running( $vsname ) ) {
+    sleep 120;
+  }
+
+  return $self->is_running( $vsname );
+}
+
+sub stop {
+  my $self    = shift;
+  my $vsname  = shift;
+
+  my $cmd = '/usr/sbin/lxc-shutdown -n '.$vsname;
+
+  my $max_tries = 10;
+
+  foreach my $try ( 1 .. $max_tries ) {
+    $self->sys()->run_cmd( $cmd );
+    last if ( ! $self->is_running( $vsname ));
+    sleep 30;
+  }
+
+  return !$self->is_running( $vsname );
+}
+
 no Moose;
 __PACKAGE__->meta->make_immutable;
 

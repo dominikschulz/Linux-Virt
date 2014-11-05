@@ -322,25 +322,6 @@ sub _get_ip_hash_key {
     return $ip . '/' . $prefix . 'dev' . $dev;
 } ## end sub _get_ip_hash_key
 
-sub is_running {
-    my $self   = shift;
-    my $vsname = shift;
-
-    # remove domain part
-    $vsname =~ s/\.[a-z0-9]$//i;
-
-    my $vs_ref = {};
-
-    $self->vms($vs_ref);
-
-    if ( $vs_ref->{$vsname} ) {
-        return 1;
-    }
-    else {
-        return;
-    }
-} ## end sub is_running
-
 sub start {
     my $self   = shift;
     my $vsname = shift;
@@ -348,6 +329,7 @@ sub start {
 
     my $cmd = "/usr/sbin/vserver $vsname start >/dev/null 2>&1";
     $self->sys()->run_cmd( $cmd, $opts );
+    sleep 1;
 
     if ( !$self->is_running($vsname) ) {
         sleep(120);
@@ -372,13 +354,7 @@ sub stop {
     }
 
     # vserver $vsname stop
-    if ( $self->is_running($vsname) ) {
-        my $msg = "Could not stop Vserver! Aborting.";
-        return;
-    }
-    else {
-        return 1;
-    }
+    return !$self->is_running($vsname);
 } ## end sub stop
 
 no Moose;

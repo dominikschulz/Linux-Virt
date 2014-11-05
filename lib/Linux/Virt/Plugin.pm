@@ -80,15 +80,26 @@ sub is_vm {
 }
 
 sub is_running {
-    my $self = shift;
+    my $self   = shift;
+    my $vsname = shift;
 
+    # remove domain part
+    $vsname =~ s/\.[a-z0-9]$//i;
+
+    my $vs_ref = {};
+
+    $self->vms($vs_ref);
+
+    if ( $vs_ref->{$vsname} ) {
+        return 1;
+    }
     return;
 }
 
 sub create {
     my $self = shift;
 
-    warn "This method is not implemented in this baseclass.\n";
+    warn "The 'create' method is not implemented in ".ref($self).".\n";
 
     return;
 } ## end sub create
@@ -98,7 +109,7 @@ sub delete {
 ## use critic
     my $self = shift;
 
-    warn "This method is not implemented in this baseclcass.\n";
+    warn "This 'delete' method is not implemented in this ".ref($self).".\n";
 
     return;
 } ## end sub delete
@@ -106,7 +117,7 @@ sub delete {
 sub vms {
     my $self = shift;
 
-    warn "This method is not implemented in this baseclcass.\n";
+    warn "This 'vms' method is not implemented in this ".ref($self).".\n";
 
     return;
 } ## end sub vms
@@ -114,7 +125,7 @@ sub vms {
 sub start {
     my $self = shift;
 
-    warn "This method is not implemented in this baseclcass.\n";
+    warn "This 'start' method is not implemented in this ".ref($self).".\n";
 
     return;
 } ## end sub start
@@ -122,7 +133,7 @@ sub start {
 sub stop {
     my $self = shift;
 
-    warn "This method is not implemented in this baseclcass.\n";
+    warn "This 'stop' method is not implemented in this ".ref($self).".\n";
 
     return;
 } ## end sub stop
